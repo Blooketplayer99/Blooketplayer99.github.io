@@ -6,20 +6,41 @@
     <title>BlooketPlayer99 | Unblocked</title>
     <style>
         body { font-family: sans-serif; background: #121212; color: white; text-align: center; margin: 0; }
-        nav { background: #1f1f1f; padding: 1rem; font-size: 1.5rem; font-weight: bold; color: #00ff88; }
+        nav { background: #1f1f1f; padding: 1rem; font-size: 1.5rem; font-weight: bold; color: #00ff88; cursor: pointer; }
+        nav:hover { background: #2a2a2a; }
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 40px; }
         .game-card { background: #252525; border-radius: 10px; padding: 15px; transition: 0.3s; cursor: pointer; border: 2px solid transparent; }
         .game-card:hover { transform: translateY(-5px); border-color: #00ff88; }
         .game-card img { width: 100%; border-radius: 5px; height: 120px; object-fit: cover; }
         h3 { margin: 10px 0 0; font-size: 1.1rem; }
+        
+        /* Game Player Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: #1f1f1f; padding: 20px; border-radius: 10px; width: 90%; height: 90%; display: flex; flex-direction: column; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #00ff88; }
+        .close-btn { font-size: 28px; font-weight: bold; cursor: pointer; color: #00ff88; }
+        .close-btn:hover { color: #00dd77; }
+        .game-iframe { flex: 1; width: 100%; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-<nav>BLOOKETPLAYER99 GAMES</nav>
+<nav onclick="goHome()">BLOOKETPLAYER99 GAMES</nav>
 
 <div class="container" id="game-container">
     <!-- Games will be injected here by JavaScript -->
+</div>
+
+<!-- Game Player Modal -->
+<div id="gameModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="gameTitle">Game Title</h2>
+            <span class="close-btn" onclick="closeGame()">&times;</span>
+        </div>
+        <iframe id="gameFrame" class="game-iframe"></iframe>
+    </div>
 </div>
 
 <script>
@@ -31,6 +52,9 @@
     ];
 
     const container = document.getElementById('game-container');
+    const gameModal = document.getElementById('gameModal');
+    const gameFrame = document.getElementById('gameFrame');
+    const gameTitle = document.getElementById('gameTitle');
 
     games.forEach(game => {
         const card = document.createElement('div');
@@ -40,11 +64,34 @@
             <h3>${game.title}</h3>
         `;
         card.onclick = () => {
-            // This opens the game in a new clean window to bypass some filters
-            window.open(game.url, '_blank', 'width=800,height=600');
+            playGame(game);
         };
         container.appendChild(card);
     });
+
+    function playGame(game) {
+        gameTitle.textContent = game.title;
+        gameFrame.src = game.url;
+        gameModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeGame() {
+        gameModal.classList.remove('show');
+        gameFrame.src = '';
+        document.body.style.overflow = 'auto';
+    }
+
+    function goHome() {
+        closeGame();
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        if (event.target === gameModal) {
+            closeGame();
+        }
+    }
 </script>
 
 </body>
